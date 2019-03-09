@@ -660,6 +660,6 @@ public function altlab_motherblog_options(){
             return $form;
         }
 
-        add_shortcode('altlab-motherblog', 'altlab_motherblog_func');
+        add_shortcode('opened-motherblog', 'altlab_motherblog_func');
     }
 }
