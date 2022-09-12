@@ -133,7 +133,7 @@ public function altlab_motherblog_options(){
                 </p>
             </form>
         </div>
-        <?php   
+        <?php
     }
 
     // Sanitize and validate input. Accepts an array, return a sanitized array.
@@ -170,7 +170,7 @@ public function altlab_motherblog_options(){
              * @since   1.1.0
              * @var     string  $category           $a{category} from shortcode args
              * @var     string  $sub_categories     $a{sub_categories} from shortcode args
-             * 
+             *
              * @return  string  HTML list of sub categories from the shortcode args
              */
             function list_created_categories($category, $sub_categories){
@@ -206,7 +206,7 @@ public function altlab_motherblog_options(){
             function create_remote_category($string) {
                 
                 if ($_POST['have-network'] === 'Yes') {
-                                        
+                    
                     // Get blog id we will switch to for remote category creation
                     // $entry, 1 comes from form input where user selects blog.
                     $switch_to = $_POST['blog-select'];
@@ -234,13 +234,13 @@ public function altlab_motherblog_options(){
                         $the_sub_category = get_term_by('name', $item, 'category');
                      
                         if( !$the_sub_category || (int)$the_sub_category->parent != (int)$category->term_id){
-                            //expanded if statement to deal with duplicate sub cats on destination blog 
+                            //expanded if statement to deal with duplicate sub cats on destination blog
                             $args = array(
                                 'parent' => (int)$category->term_id
                             );
 
-                            wp_insert_term( $item, 'category', $args );                           
-                        }   
+                            wp_insert_term( $item, 'category', $args );
+                        }
                     }
                 }
             }
@@ -248,7 +248,7 @@ public function altlab_motherblog_options(){
             function create_remote_sub_categories($string, $category) {
                 
                 if ($_POST['have-network'] === 'Yes') {
-                                        
+                    
                     // Get blog id we will switch to for remote category creation
                     // $entry, 1 comes from form input where user selects blog.
                     $switch_to = $_POST['blog-select'];
@@ -428,7 +428,7 @@ public function altlab_motherblog_options(){
              * @var     $blogID     id of blog to switch to
              * @var     $category   term_object ( should be string? cause we don't yet even have an object to give it yet I don't think... )
              *
-             * @return  array()  
+             * @return  array()
              */
             
             function get_remote_blog_info( $blogID, $category ) {
@@ -441,7 +441,7 @@ public function altlab_motherblog_options(){
                     $remote_blog->term_id = get_cat_ID( $category->slug );
                     $remote_blog->feed_url = get_site_url() . '/category/' . $category->slug . '/feed';
                     $remote_blog->comments_feed_url = get_site_url() . '/comments/feed/?cat=' . get_cat_ID( $category->slug );
-                        
+                    
                 // switch back to motherblog
                 restore_current_blog();
                 
@@ -472,12 +472,12 @@ public function altlab_motherblog_options(){
              * @since 1.1.0
              * @var     $remote_blog    object containing details about the remote blog we are trying to signup
              *
-             * @return  array()  
+             * @return  array()
              */
 
             function check_for_dupes( $remote_blog ){
                 $args = array(
-                    'limit'          => -1, 
+                    'limit'          => -1,
                     'category_name'  => 'Contributors'
                 );
 
@@ -487,7 +487,7 @@ public function altlab_motherblog_options(){
                     if ( $link->link_rss === $remote_blog->feed_url ){
                         die('<p>This blog is already connected.</p>');
                     }
-                } 
+                }
             }
 
 
@@ -498,15 +498,15 @@ public function altlab_motherblog_options(){
 
 
             // set $mother_category var
-            if ( get_term_by('name', $a{'category'}, 'category') ){
-                $mother_category = get_term_by('name', $a{'category'}, 'category');
+            if ( get_term_by('name', $a['category'], 'category') ){
+                $mother_category = get_term_by('name', $a['category'], 'category');
             } else {
-                $mother_category = create_category( $a{'category'} );
+                $mother_category = create_category( $a['category'] );
             }
 
 
             // set $sub_categories var
-            $sub_categories = $a{'sub_categories'};
+            $sub_categories = $a['sub_categories'];
 
             // create sub cats if they don't exist already
             create_sub_categories($sub_categories, $mother_category);
@@ -520,7 +520,7 @@ public function altlab_motherblog_options(){
                         <option value=''>Select your blog</option>" . create_blogs_dropdown( get_blogs_of_current_user_by_role() ) . "</select>
                 </p>";
                 $blog_select_login_prompt = "";
-            } 
+            }
             else {
                 $blog_select = "";
                 $blog_select_login_prompt = "<p>Awesome! But you'll have to <a href='" . wp_login_url(get_the_permalink()) . "'>login</a> before we can take the next step.</p>";
@@ -597,10 +597,10 @@ public function altlab_motherblog_options(){
                 
                 if ($_POST['email']) {
                     die('<p>An error occurred. You have not been connected.</p>');
-                } 
+                }
                 else if (is_user_logged_in() && $_POST['blog-select'] && !$_POST['email']) {
 
-                    create_remote_category( $a{'category'} );
+                    create_remote_category( $a['category'] );
 
                     $remote_blog = get_remote_blog_info( $_POST['blog-select'], $mother_category );
 
@@ -614,27 +614,27 @@ public function altlab_motherblog_options(){
                     
                     create_fwp_link( $mother_category );
 
-                    if( $a{'get_comments'} === 'true' ){
+                    if( $a['get_comments'] === 'true' ){
                         create_fwp_comments_link($mother_category);
                     }
                     
                     if ( $sub_categories ){
                        $form_response .= '<h2>SUCCESS!</h2>';
                        $form_response .= '<p>The following category and sub categories have been added your blog "<strong>' . $remote_blog->name . '</strong>".</p>';
-                       $form_response .= list_created_categories( $a{'category'},$sub_categories );
+                       $form_response .= list_created_categories( $a['category'],$sub_categories );
                        $form_response .= '<p>Only posts you create in these categories on your blog "<strong>' . $remote_blog->name . '</strong>" will appear on this site.</p>';
                        $form_response .= '<a href="' . $remote_blog->url . '">Return to your site '.$remote_blog->name.'</a>';
 
                     } else {
                         $form_response .= '<h2>SUCCESS!</h2>';
-                        $form_response .= '<p>The category "<strong>' . $a{'category'} . '</strong>" has been added to your blog "<strong>' . $remote_blog->name . '</strong>".</p>
-                    <p>Only posts you create in the "' . $a{'category'} . '" category on your blog "<strong>' . $remote_blog->name . '</strong>" will appear on this site.</p>';
+                        $form_response .= '<p>The category "<strong>' . $a['category'] . '</strong>" has been added to your blog "<strong>' . $remote_blog->name . '</strong>".</p>
+                    <p>Only posts you create in the "' . $a['category'] . '" category on your blog "<strong>' . $remote_blog->name . '</strong>" will appear on this site.</p>';
                         $form_response .= '<a href="' . $remote_blog->url . '">Return to your site '.$remote_blog->name.'</a>';
                     }
 
                     return $form_response;
 
-                } 
+                }
                 else if ($_POST['blog-feed'] && !$_POST['email']) {
                     create_fwp_link_off_network();
                     
@@ -643,7 +643,7 @@ public function altlab_motherblog_options(){
                     Only posts that appear in the feed you submitted will appear on this site.</p>";
 
                     return $form_response;
-                } 
+                }
                 else {
                     $form_response .= "<h2>CRUSHING DEFEAT!</h2>";
                     $form_response .= "<p>An error occurred. You have not been connected. But you should totally try again.</p>";
